@@ -123,10 +123,7 @@ set tm=500
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
 syntax enable
-
-colorscheme desert
-set background=dark
-
+set t_Co=256
 " Set extra options when running in GUI mode
 if has("gui_running")
     set guioptions-=T
@@ -413,6 +410,14 @@ source ~/.vim_runtime/my_configs.vim
 catch
 endtry
 
+set nocompatible
+let $PATH = $PATH . ':' . expand("~/.cabal/bin")
+nnoremap j gj
+nnoremap k gk
+nmap <silent> ,/ :nohlsearch<CR>
+set runtimepath+=~/.vim_runtime
+
+
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadBraces
@@ -432,13 +437,23 @@ Bundle 'bling/vim-airline'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'vim-scripts/Conque-Shell'
 Bundle 'vim-scripts/YankRing.vim'
-Bundle 'bitc/vim-hdevtools'
-Bundle 'eagletmt/ghcmod-vim'
-Bundle 'eagletmt/neco-ghc'
 Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-dispatch'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-unimpaired'
 Bundle 'terryma/vim-multiple-cursors'
+Bundle 'Shougo/vimproc'
+Bundle 'eagletmt/ghcmod-vim'
+Bundle 'eagletmt/neco-ghc'
+Bundle 'dag/vim2hs'
+Bundle 'lukerandall/haskellmode-vim'
+Bundle 'scrooloose/syntastic'
+Bundle 'Shougo/neocomplete.vim'
+Bundle 'eagletmt/ghci-vim'
+Bundle 'kien/rainbow_parentheses.vim'
+Bundle 'vim-scripts/a.vim'
+Bundle 'vim-scripts/Wombat'
+
 filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
 
@@ -457,6 +472,20 @@ let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
 let mapleader = "\\"
-au FileType haskell noremap <c-m> :GhcModType<CR>
-au FileType haskell noremap <c-l> :GhcModTypeClear<CR>
-au FileType haskell noremap <leader><c-m> :GhcModCheck<CR>
+let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
+
+au FileType haskell nnoremap <c-m> :GhcModType<CR>
+au FileType haskell nnoremap <c-l> :GhcModTypeClear<CR>
+au FileType haskell nnoremap <c-c> :GhcModCheck<CR>
+au FileType haskell nnoremap <c-e> :GhcModExpand<CR>
+let g:neocomplete#force_overwrite_completefunc=1
+au FileType haskell setlocal omnifunc=necoghc#omnifunc
+let g:necoghc_debug=1
+au FileType haskell NeoCompleteEnable
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:haddock_browser="/usr/bin/firefox"
+let g:necoghc_enable_detailed_browse = 1
+set background=dark
+colorscheme wombat
