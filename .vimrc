@@ -401,7 +401,6 @@ nmap <silent> <A-Down> :wincmd j<CR>
 nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
 
-noremap <F12> <Esc>:syntax sync fromstart<CR>
 inoremap <F12> <C-o>:syntax sync fromstart<CR>
 
 
@@ -452,7 +451,7 @@ Bundle 'Shougo/neocomplete.vim'
 Bundle 'eagletmt/ghci-vim'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'vim-scripts/a.vim'
-Bundle 'vim-scripts/Wombat'
+Bundle 'vim-scripts/STL-Syntax'
 
 filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
@@ -488,4 +487,7 @@ endif
 let g:haddock_browser="/usr/bin/firefox"
 let g:necoghc_enable_detailed_browse = 1
 set background=dark
-colorscheme wombat
+colorscheme desert
+nmap <leader>w :w<CR>
+map! ;; <esc>
+vno v <esc>
