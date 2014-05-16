@@ -420,6 +420,7 @@ set runtimepath+=~/.vim_runtime
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadBraces
+au Syntax * RainbowParenthesesLoadChevrons
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -451,11 +452,19 @@ Bundle 'Shougo/neocomplete.vim'
 Bundle 'eagletmt/ghci-vim'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'vim-scripts/a.vim'
-Bundle 'vim-scripts/STL-Syntax'
+Bundle 'vim-scripts/a.vim'
+Bundle 'vim-scripts/taglist.vim'
+Bundle 'vim-scripts/minibufexplorerpp'
+Bundle 'the-lambda-church/merlin'
+Bundle 'OCamlPro/ocp-indent'
 
 filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
 
+let g:miniBufExplMapWindowNavVim = 1
+let g:miniBufExplMapWindowNavArrows = 1
+let g:miniBufExplMapCTabSwitchBufs = 1
+let g:miniBufExplModSelTarget = 1 
 
 let hs_highlight_boolean = 1
 let hs_highlight_types = 1
@@ -470,10 +479,10 @@ let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
-let mapleader = "\\"
+let mapleader = "'"
 let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
 
-au FileType haskell nnoremap <c-m> :GhcModType<CR>
+au FileType haskell nnoremap <c-m> :GhciType<CR>
 au FileType haskell nnoremap <c-l> :GhcModTypeClear<CR>
 au FileType haskell nnoremap <c-c> :GhcModCheck<CR>
 au FileType haskell nnoremap <c-e> :GhcModExpand<CR>
@@ -482,12 +491,20 @@ au FileType haskell setlocal omnifunc=necoghc#omnifunc
 let g:necoghc_debug=1
 au FileType haskell NeoCompleteEnable
 if !exists('g:neocomplete#sources#omni#input_patterns')
-  let g:neocomplete#sources#omni#input_patterns = {}
+    let g:neocomplete#sources#omni#input_patterns = {}
 endif
 let g:haddock_browser="/usr/bin/firefox"
 let g:necoghc_enable_detailed_browse = 1
+au FileType haskell GhciLoad
 set background=dark
 colorscheme desert
-nmap <leader>w :w<CR>
-map! ;; <esc>
+nmap <leader>aw :wa<CR>
+map ;; <esc>
 vno v <esc>
+set pastetoggle=<leader>p
+
+let s:ocamlmerlin=substitute(system('opam config var share'),'\n$','','''') .  "/ocamlmerlin"
+execute "set rtp+=".s:ocamlmerlin."/vim"
+execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
+let g:syntastic_ocaml_checkers = ['merlin']
+
