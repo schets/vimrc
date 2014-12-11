@@ -420,9 +420,8 @@ set runtimepath+=~/.vim_runtime
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadBraces
+au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadChevrons
-
-set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
@@ -430,6 +429,7 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle 'gmarik/vundle'
+Bundle 'godlygeek/csapprox'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-fugitive'
@@ -447,19 +447,37 @@ Bundle 'eagletmt/ghcmod-vim'
 Bundle 'eagletmt/neco-ghc'
 Bundle 'dag/vim2hs'
 Bundle 'lukerandall/haskellmode-vim'
-Bundle 'scrooloose/syntastic'
-Bundle 'Shougo/neocomplete.vim'
 Bundle 'eagletmt/ghci-vim'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'vim-scripts/a.vim'
-Bundle 'vim-scripts/a.vim'
 Bundle 'vim-scripts/taglist.vim'
 Bundle 'vim-scripts/minibufexplorerpp'
+Bundle 'vim-scripts/repeater.vim'
 Bundle 'the-lambda-church/merlin'
 Bundle 'OCamlPro/ocp-indent'
+Bundle 'ivanov/vim-ipython'
+Bundle 'johndgiese/vipy'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'fugalh/desert.vim'
+Bundle 'Lokaltog/vim-distinguished'
+Bundle 'hylang/vim-hy'
+Bundle 'kien/ctrlp.vim'
+Bundle 'majutsushi/tagbar'
+Bundle 'wting/rust.vim'
+Bundle 'vim-scripts/paredit.vim'
 
+Bundle 'vim-fireplace'
 filetype plugin indent on
+so ~/.vim/bundle/vim-ipython/ftplugin/python/ipy.vim
 set omnifunc=syntaxcomplete#Complete
+
+let g:ycm_filtetype_whitelist = {'cpp' : 1,
+            \ 'c' : 1,
+            \ 'python' : 1,
+            \ 'py' : 1 }
+
+let g:ycm_autoclose_preview_window_after_completetion=1
+nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 let g:miniBufExplMapWindowNavVim = 1
 let g:miniBufExplMapWindowNavArrows = 1
@@ -471,7 +489,6 @@ let hs_highlight_types = 1
 let hs_highlight_more_types = 1
 let g:hdevtools_options = '-g-isrc'
 
-let g:necoghc_enable_detailed_browse = 1
 
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-n>'
@@ -479,32 +496,39 @@ let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
-let mapleader = "'"
 let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
-
 au FileType haskell nnoremap <c-m> :GhciType<CR>
 au FileType haskell nnoremap <c-l> :GhcModTypeClear<CR>
 au FileType haskell nnoremap <c-c> :GhcModCheck<CR>
 au FileType haskell nnoremap <c-e> :GhcModExpand<CR>
-let g:neocomplete#force_overwrite_completefunc=1
-au FileType haskell setlocal omnifunc=necoghc#omnifunc
-let g:necoghc_debug=1
-au FileType haskell NeoCompleteEnable
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-endif
 let g:haddock_browser="/usr/bin/firefox"
-let g:necoghc_enable_detailed_browse = 1
 au FileType haskell GhciLoad
 set background=dark
 colorscheme desert
 nmap <leader>aw :wa<CR>
-map ;; <esc>
+inoremap ;; <esc>
 vno v <esc>
 set pastetoggle=<leader>p
 
-let s:ocamlmerlin=substitute(system('opam config var share'),'\n$','','''') .  "/ocamlmerlin"
-execute "set rtp+=".s:ocamlmerlin."/vim"
-execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
-let g:syntastic_ocaml_checkers = ['merlin']
+let g:ipy_completefunc = 'local'
+" Search for selected text, forwards or backwards.
+vnoremap <silent> * :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>=substitute(
+  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>=substitute(
+  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>"
 
+"let g:syntastic_ignore_files = ['*.hy']
+nnoremap <leader>. :CtrlPTag<cr>
+nnoremap <silent> <leader>b :TagbarToggle<cr>
+
+"turn paredit on for hylisp
+au filetype hy let g:paredit_mode = 1
+au filetype hy call PareditInitBuffer()
+
+syntax on
